@@ -2,6 +2,7 @@ import { useEffect, useReducer } from "react";
 import Main from "./Main";
 import Loader from "./Loader";
 import Error from "./Error";
+import StartPage from "./StartPage";
 
 const initialState = {
   questions: [],
@@ -35,6 +36,7 @@ function App() {
       <Main>
         {status === "loading" && <Loader />}
         {status === "error" && <Error />}
+        {status === "ready" && <StartPage />}
       </Main>
     </div>
   );
