@@ -8,9 +8,11 @@ const initialState = {
 function reducer(state, action) {
   switch (action.type) {
     case "dataFetched":
-      return { ...state, questions: action.payload };
+      return { ...state, questions: action.payload, status: "ready" };
+    case "dataFailed":
+      return { ...state, status: "error" };
     default:
-      throw new Error("Error");
+      throw new Error("Action unknown");
   }
 }
 
@@ -22,7 +24,8 @@ function App() {
   useEffect(function () {
     fetch("https://the-trivia-api.com/v2/questions")
       .then((res) => res.json())
-      .then((data) => dispatch({ type: "dataFetched", payload: data }));
+      .then((data) => dispatch({ type: "dataFetched", payload: data }))
+      .catch((err) => dispatch({ type: "dataFailed" }));
   }, []);
 
   return (
