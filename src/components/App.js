@@ -3,10 +3,12 @@ import Main from "./Main";
 import Loader from "./Loader";
 import Error from "./Error";
 import StartPage from "./StartPage";
+import Question from "./Question";
 
 const initialState = {
   questions: [],
   status: "loading",
+  index: 0,
 };
 function reducer(state, action) {
   switch (action.type) {
@@ -14,6 +16,8 @@ function reducer(state, action) {
       return { ...state, questions: action.payload, status: "ready" };
     case "dataFailed":
       return { ...state, status: "error" };
+    case "start":
+      return { ...state, status: "active" };
     default:
       throw new Error("Action unknown");
   }
@@ -21,8 +25,11 @@ function reducer(state, action) {
 
 function App() {
   //useReducer instate of useState
-  const [{ questions, status }, dispatch] = useReducer(reducer, initialState);
-
+  const [{ questions, status, index }, dispatch] = useReducer(
+    reducer,
+    initialState
+  );
+  const numQuestions = questions.length;
   //fetch data from free API
   useEffect(function () {
     fetch("https://the-trivia-api.com/v2/questions")
@@ -36,7 +43,10 @@ function App() {
       <Main>
         {status === "loading" && <Loader />}
         {status === "error" && <Error />}
-        {status === "ready" && <StartPage />}
+        {status === "ready" && (
+          <StartPage numQuestions={numQuestions} dispatch={dispatch} />
+        )}
+        {status === "active" && <Question question={questions[index]} />}
       </Main>
     </div>
   );
